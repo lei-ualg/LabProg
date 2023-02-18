@@ -178,10 +178,8 @@ Jogador create_jogador(char *nome, char *apelido, int ano_nascimento, char *posi
 {
     Jogador j;
 
-    strncpy(j.nome, nome, 99);
-    j.nome[strlen(j.nome)] = '\0';
-    strncpy(j.apelido, apelido, 99);
-    j.apelido[strlen(j.apelido)] = '\0';
+    strcpy(j.nome, nome);
+    strcpy(j.apelido, apelido);
     j.ano_nascimento = ano_nascimento;
     j.posicao = parse_posicao(posicao);
     j.internacionalizacoes = internacionalizacoes;
