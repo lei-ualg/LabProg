@@ -1,0 +1,9 @@
+exemplo_submissoes.tsv
+ORDER id
+PRINT 10
+ORDER number_ascending
+PRINT 10
+ORDER number_descending
+PRINT 10
+ORDER problem
+PRINT 10

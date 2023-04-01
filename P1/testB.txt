@@ -1,0 +1,3 @@
+exemplo_submissoes.tsv
+STATS A
+STATS B
