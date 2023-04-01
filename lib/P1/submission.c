@@ -634,7 +634,7 @@ void teste_ordenacao(void)
             else
             {
                 int q = atoi(arg);
-                muliple_print_simple(submissions, q);
+                muliple_print_simple(submissions, q > n ? n : q);
             }
         }
     }
