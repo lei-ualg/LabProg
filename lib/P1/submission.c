@@ -457,7 +457,7 @@ void print_ranks(Rank **ranks, int n)
 
 // Main ------------------------------------------------------------------------------------------ //
 
-int read_submissions(FILE *f, Submission ***submissions)
+int read_submissions(FILE *f, Submission **submissions) //! *** porque é um ponteiro para um array de ponteiros de submissoes
 {
     while (fgetc(f) != '\n'); // le a primeira linha caractere a caractere para ser ignorada
 
@@ -465,13 +465,11 @@ int read_submissions(FILE *f, Submission ***submissions)
     int number, points;
     char time[100], group[101], id[101], team[101], problem[101], language[101], result[101], status[101];
 
-    *submissions = calloc(1, sizeof(Submission *));
-
     while (fscanf(f, "%d\t%[^\t\n]\t%d\t%s\t%s\t%[^\t\n]\t%s\t%s\t%[^\t\n]\t%s\n", &number, time, &points, group, id, team, problem, language, result, status) != EOF)
     {
         if (n)
-            *submissions = realloc(*submissions, (n+1) * sizeof(Submission *));
-        (*submissions)[n++] = c_submission(number, time, points, group, id, team, problem, language, c_result(result), c_status(status));
+            submissions = realloc(*submissions, (n+1) * sizeof(Submission *));
+        submissions[n++] = c_submission(number, time, points, group, id, team, problem, language, c_result(result), c_status(status));
     }
 
     return n;
@@ -526,8 +524,8 @@ void teste_leitura_simples(void)
     char filename[100];
     scanf("%s", filename);
     FILE *f = fopen(filename, "r");
-    Submission **submissions = NULL;
-    int n = read_submissions(f, &submissions);
+    Submission **submissions = calloc(1, sizeof(Submission *));
+    int n = read_submissions(f, submissions);
     Submission **submissions_out = calloc(n, sizeof(Submission *));
     int out_size = filter_submissions_by_result(submissions, n, submissions_out, Accepted);
     muliple_print_simple(submissions_out, out_size);
@@ -541,8 +539,8 @@ void teste_estatisticas(void)
     char filename[100];
     scanf("%s", filename);
     FILE *f = fopen(filename, "r");
-    Submission **submissions = NULL;
-    int n = read_submissions(f, &submissions);
+    Submission **submissions = calloc(1, sizeof(Submission *));
+    int n = read_submissions(f, submissions);
     Submission **submissions_out = calloc(n, sizeof(Submission *));
     char problem[101], command[100];
     while (scanf("%s", command) != EOF)
@@ -576,8 +574,8 @@ void teste_atualizacao(void)
     char filename[100];
     scanf("%s", filename);
     FILE *f = fopen(filename, "r+");
-    Submission **submissions = NULL;
-    int n = read_submissions(f, &submissions);
+    Submission **submissions = calloc(1, sizeof(Submission *));
+    int n = read_submissions(f, submissions);
     char command[100];
     int number, points;
     while (scanf("%s", command) != EOF)
@@ -620,8 +618,8 @@ void teste_ordenacao(void)
     char filename[100];
     scanf("%s", filename);
     FILE *f = fopen(filename, "r");
-    Submission **submissions = NULL;
-    int n = read_submissions(f, &submissions);
+    Submission **submissions = calloc(1, sizeof(Submission *));
+    int n = read_submissions(f, submissions);
     char command[100], arg[100];
     while (scanf("%s%s", command, arg) != EOF)
     {
@@ -648,8 +646,8 @@ void teste_ranking(void)
     scanf("%s", filename);
     FILE *f = fopen(filename, "r");
 
-    Submission **submissions = NULL;
-    int n = read_submissions(f, &submissions);
+    Submission **submissions = calloc(1, sizeof(Submission *));
+    int n = read_submissions(f, submissions);
 
     char **problems = NULL;
     int n_problems = count_problems(submissions, n, &problems);
