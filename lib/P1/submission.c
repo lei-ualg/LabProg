@@ -309,15 +309,6 @@ int count_submissions_by_result(Submission **submissions, int n, Result result)
     return n_filtered;
 }
 
-int count_submissions_by_problem(Submission **submissions, int n, char *problem)
-{
-    int n_filtered = 0;
-    for (int i = 0; i < n; i++)
-        if (filter_by_problem(submissions[i], problem)) // faz a mesma coisa, só que ao invés de passar para o out, conta a quantidade de submissoes com o mesmo problema
-            n_filtered++;
-    return n_filtered;
-}
-
 int count_problems(Submission **submissions, int n, char ***problems_out)
 {
     int n_problems = 0;
