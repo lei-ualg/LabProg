@@ -227,4 +227,5 @@ void test_G_S2(void)
 
     for (int i = 0; i < total; i++)
         free_jogador(jogadores[i]);
+    free(jogadores);
 }

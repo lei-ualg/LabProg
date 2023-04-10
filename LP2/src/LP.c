@@ -28,7 +28,7 @@ size parse_size(char *s)
     return -1;
 }
 
-typedef struct S_Creature
+typedef struct
 {
     char name[100];
     char type[100];
@@ -37,6 +37,7 @@ typedef struct S_Creature
     int hit_points;
     double challenge_rating;
 } Creature;
+
 
 Creature create_creature(char *name, char *type, char *size, int armor_class, int hit_points, double challenge_rating)
 {
@@ -171,7 +172,7 @@ typedef struct S_Jogador
     posicao posicao;
     int internacionalizacoes;
     int golos;
-    char cluble[100];
+    char clube[100];
 } Jogador;
 
 Jogador create_jogador(char *nome, char *apelido, int ano_nascimento, char *posicao, int internacionalizacoes, int golos, char *clube)
@@ -180,19 +181,18 @@ Jogador create_jogador(char *nome, char *apelido, int ano_nascimento, char *posi
 
     strcpy(j.nome, nome);
     strcpy(j.apelido, apelido);
+    strcpy(j.clube, clube);
     j.ano_nascimento = ano_nascimento;
     j.posicao = parse_posicao(posicao);
     j.internacionalizacoes = internacionalizacoes;
     j.golos = golos;
-    strncpy(j.cluble, clube, 99);
-    j.cluble[strlen(j.cluble)] = '\0';
 
     return j;
 }
 
 void print_jogador(Jogador j)
 {
-    printf("[%s][%s][%d][%s][%d][%d][%s]\n", j.nome, j.apelido, j.ano_nascimento, POSICOES[j.posicao], j.internacionalizacoes, j.golos, j.cluble);
+    printf("[%s][%s][%d][%s][%d][%d][%s]\n", j.nome, j.apelido, j.ano_nascimento, POSICOES[j.posicao], j.internacionalizacoes, j.golos, j.clube);
 }
 
 void adiciona_internacionalizacao(Jogador *j, int golos)
@@ -213,7 +213,7 @@ int pesquisa_jogadores_clube(Jogador *in, int n, Jogador *out, char *clube)
 {
     int res = 0;
     for (int i = 0; i < n; i++)
-        if (!strcmp(in[i].cluble, clube))
+        if (!strcmp(in[i].clube, clube))
             out[res++] = in[i];
     return res;
 }
@@ -247,13 +247,6 @@ void testG()
         {
             char nome[100] = {}, apelido[100] = {};
             int golos = 0;
-            // Para funcionar com o teste errado do professor
-            // if (criteria[1] != '\0')
-            // {
-            //     sscanf(criteria, "+%s", nome);
-            //     scanf("%s%d", apelido, &golos);
-            // }
-            // else
             scanf("%s %s %d", nome, apelido, &golos);
             Jogador *j = pesquisa_jogador(jogadores, total, nome, apelido);
             if (j != NULL)
@@ -267,10 +260,6 @@ void testG()
         else if (criteria[0] == '?')
         {
             char clube[100] = {};
-            // Para funcionar com o teste errado do professor
-            // if (criteria[1] != '\0')
-            //     sscanf(criteria, "?%s", clube);
-            // else
             scanf("%s", clube);
             Jogador *jogadores_clube = malloc(total * sizeof(Jogador));
             int res = pesquisa_jogadores_clube(jogadores, total, jogadores_clube, clube);
