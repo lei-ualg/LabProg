@@ -4,7 +4,7 @@ enum LightColor {
     RED;
     
     public LightColor next() {
-        return values[(ordinal() + 1) % values().length];
+        return values()[(ordinal() + 1) % values().length];
     }
 }
 
