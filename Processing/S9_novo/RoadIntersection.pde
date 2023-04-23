@@ -2,7 +2,7 @@ class RoadIntersection {
   TrafficLight trafficlights[] = new TrafficLight[4];
 
   float centerX = width/2, centerY = height/2, roadWidth = width/5;
-
+  float tlW = roadWidth/5, tlH= tlW*2;
   float greenDuration;
 
   Cars[] traffic = new Cars[4];
@@ -13,20 +13,22 @@ class RoadIntersection {
     this.centerX = centerX;
     this.centerY = centerY;
     this.roadWidth = roadWidth;
+    this.tlW = this.roadWidth/5;
+    this.tlH= this.tlW*2;
 
     this.exercise = exercise;
     this.greenDuration = greenDuration;
 
-    trafficlights[0] = new TrafficLight(this.centerX, this.centerY+TL_H*1.25, TL_W, TL_H, Direction.NORTH, 0);
-    trafficlights[1] = new TrafficLight(this.centerX, this.centerY-TL_H*1.25, TL_W, TL_H, Direction.SOUTH, 0);
-    trafficlights[2] = new TrafficLight(this.centerX-TL_H*1.5, this.centerY, TL_W, TL_H, Direction.EAST, 0);
-    trafficlights[3] = new TrafficLight(this.centerX+TL_H*1.5, this.centerY, TL_W, TL_H, Direction.WEST, 0);
+    trafficlights[0] = new TrafficLight(this.centerX+this.roadWidth/1.5, this.centerY+this.tlH*2.5, this.tlW, this.tlH, Direction.NORTH, 0);
+    trafficlights[1] = new TrafficLight(this.centerX-this.roadWidth/1.5, this.centerY-this.tlH*2.5, this.tlW, this.tlH, Direction.SOUTH, 0);
+    trafficlights[2] = new TrafficLight(this.centerX-this.tlH*2.5, this.centerY+this.roadWidth/1.5, this.tlW, this.tlH, Direction.EAST, 0);
+    trafficlights[3] = new TrafficLight(this.centerX+this.tlH*2.5, this.centerY-this.roadWidth/1.5, this.tlW, this.tlH, Direction.WEST, 0);
     this.nextDirection(true);
 
-    this.traffic[0] = new Cars(Direction.NORTH, this.roadWidth, this.centerX, this.centerY, this.centerX, (this.centerY+TL_H*1.25));
-    this.traffic[1] = new Cars(Direction.SOUTH, this.roadWidth, this.centerX, this.centerY, this.centerX, this.centerY-TL_H*1.25);
-    this.traffic[2] = new Cars(Direction.EAST, this.roadWidth, this.centerX, this.centerY, this.centerX-TL_H*1.5, this.centerY);
-    this.traffic[3] = new Cars(Direction.WEST, this.roadWidth, this.centerX, this.centerY, this.centerX+TL_H*1.5, this.centerY);
+    this.traffic[0] = new Cars(Direction.NORTH, this.roadWidth, this.centerX, this.centerY, this.trafficlights[0].x, this.trafficlights[0].y);
+    this.traffic[1] = new Cars(Direction.SOUTH, this.roadWidth, this.centerX, this.centerY, this.trafficlights[1].x, this.trafficlights[1].y);
+    this.traffic[2] = new Cars(Direction.EAST, this.roadWidth, this.centerX, this.centerY, this.trafficlights[2].x, this.trafficlights[2].y);
+    this.traffic[3] = new Cars(Direction.WEST, this.roadWidth, this.centerX, this.centerY, this.trafficlights[3].x, this.trafficlights[3].y);
   }
 
   RoadIntersection(int exercise, float greenDuration) {
@@ -34,10 +36,10 @@ class RoadIntersection {
 
     this.greenDuration = greenDuration;
 
-    trafficlights[0] = new TrafficLight(this.centerX+roadWidth/1.5, this.centerY+TL_H*2.5, TL_W, TL_H, Direction.NORTH, 0);
-    trafficlights[1] = new TrafficLight(this.centerX-roadWidth/1.5, this.centerY-TL_H*2.5, TL_W, TL_H, Direction.SOUTH, 0);
-    trafficlights[2] = new TrafficLight(this.centerX-TL_H*2.5, this.centerY+roadWidth/1.5, TL_W, TL_H, Direction.EAST, 0);
-    trafficlights[3] = new TrafficLight(this.centerX+TL_H*2.5, this.centerY-roadWidth/1.5, TL_W, TL_H, Direction.WEST, 0);
+    trafficlights[0] = new TrafficLight(this.centerX+roadWidth/1.5, this.centerY+this.tlH*2.5, this.tlW, this.tlH, Direction.NORTH, 0);
+    trafficlights[1] = new TrafficLight(this.centerX-roadWidth/1.5, this.centerY-this.tlH*2.5, this.tlW, this.tlH, Direction.SOUTH, 0);
+    trafficlights[2] = new TrafficLight(this.centerX-this.tlH*2.5, this.centerY+roadWidth/1.5, this.tlW, this.tlH, Direction.EAST, 0);
+    trafficlights[3] = new TrafficLight(this.centerX+this.tlH*2.5, this.centerY-roadWidth/1.5, this.tlW, this.tlH, Direction.WEST, 0);
     this.nextDirection(true);
     this.traffic[0] = new Cars(Direction.NORTH, this.roadWidth, this.centerX, this.centerY, this.trafficlights[0].x, this.trafficlights[0].y);
     this.traffic[1] = new Cars(Direction.SOUTH, this.roadWidth, this.centerX, this.centerY, this.trafficlights[1].x, this.trafficlights[1].y);
@@ -52,30 +54,31 @@ class RoadIntersection {
   }
 
   private void toggleTraffic() {
-    for(int i = 0; i < trafficlights.length; i++) {
+    for (int i = 0; i < trafficlights.length; i++) {
       switch(trafficlights[i].direction) {
       case NORTH:
         if (trafficlights[i].currentIndex != 2 && traffic[i].posY >= trafficlights[i].y)
-            traffic[i].stopped = true;
+          traffic[i].stopped = true;
         else
-            traffic[i].stopped = false;
+          traffic[i].stopped = false;
         break;
       case SOUTH:
         if (trafficlights[i].currentIndex != 2 && traffic[i].posY <= trafficlights[i].y)
-            traffic[i].stopped = true;
+          traffic[i].stopped = true;
         else
-            traffic[i].stopped = false;
+          traffic[i].stopped = false;
         break;
       case EAST:
-      if (trafficlights[i].currentIndex != 2 && traffic[i].posX <= trafficlights[i].x)
-            traffic[i].stopped = true;
+        if (trafficlights[i].currentIndex != 2 && traffic[i].posX <= trafficlights[i].x)
+          traffic[i].stopped = true;
         else
-            traffic[i].stopped = false;
+          traffic[i].stopped = false;
         break;
-      default:if (trafficlights[i].currentIndex != 2 && traffic[i].posX >= trafficlights[i].x)
-            traffic[i].stopped = true;
+      default:
+        if (trafficlights[i].currentIndex != 2 && traffic[i].posX >= trafficlights[i].x)
+          traffic[i].stopped = true;
         else
-            traffic[i].stopped = false;
+          traffic[i].stopped = false;
         break;
       }
     }
@@ -144,9 +147,9 @@ class RoadIntersection {
       }
       break;
     }
-    
-      stroke(#ddaa33);
-    point(this.centerX+roadWidth/1.5, this.centerY+TL_H*2.5);
-      noStroke();
+
+    stroke(#ddaa33);
+    point(this.centerX+roadWidth/1.5, this.centerY+this.tlH*2.5);
+    noStroke();
   }
 }

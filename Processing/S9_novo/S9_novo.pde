@@ -9,14 +9,13 @@ final int FRAMERATE = 60;
 
 final int GREENDURATION = 3;
 
-int CENTER_X, CENTER_Y, TL_W, TL_H;
 
 RoadIntersection ri;
 
 void settings() {
-  size(displayWidth/2, displayHeight);
+  size(displayWidth/2,displayHeight/2);
   pixelDensity(displayDensity());
-  noSmooth();
+  //noSmooth();
 }
 
 void setup() {
@@ -31,14 +30,11 @@ void setup() {
   
   frameRate(FRAMERATE);
 
-  CENTER_X = width/2;
-  CENTER_Y = height/2;
-
-  TL_W = width/20;
-  TL_H = TL_W*2;
   
-  ri = new RoadIntersection(5, GREENDURATION);
-
+  ri = new RoadIntersection(3, GREENDURATION);
+  //surface.setTitle("S9");
+  //surface.setResizable(true);
+  //surface.setLocation(100, 100);
 }
 void draw() {
   ri.draw();  
