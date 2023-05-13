@@ -21,14 +21,16 @@ void setup() {
 void keyPressed() {
   if (field != null)
     field.keyPressed();
-  if (GAME_OVER && key == 'r') {
+  if ((GAME_OVER && key == 'r') ||(key == 'R')) {
     field = new Field();
     GAME_OVER = false;
   }
-  if (keyCode== DOWN) {
-    if (field != null)
+  if (field != null)
+    if (key== 'T') {
       field.ceiling.add_step();
-  }
+    } else if (key== 'Y') {
+      GAME_OVER = true;
+    }
 }
 
 void keyReleased() {
@@ -38,17 +40,9 @@ void keyReleased() {
 
 
 void draw() {
-  background(color(190, 50, 50));
+  background(190, 70, 60);
   noStroke();
-  //for (int j=0; j<15; j++)
-  //  for (int i = 0; i<10; i++)
-  //  {
-  //    rectMode(CORNER);
-  //    color bg = (i%2)==j%2 ?color(180, 90, 40):color(180, 90, 30);
-  //    fill(bg);
-  //    rect(WALL+(BUBBLE_DIAMETER*i), WALL+(BUBBLE_DIAMETER*j), BUBBLE_DIAMETER, BUBBLE_DIAMETER);
-  //  }
-  fill(color(40, 90, 70));
+  fill(40, 90, 70);
   rectMode(CENTER);
   rect(WALL/2, height/2, WALL, height);
   rect(width-(WALL/2), height/2, WALL, height);
@@ -64,8 +58,8 @@ void draw() {
     textAlign(CENTER, CENTER);
     text("GAME OVER", width/2, height/2);
     fill(0, 0, 100);
-    textSize(width/10);
-    text("R to restart", width/2, height/1.5);
+    textSize(width/12);
+    text("Press R to restart", width/2, height/1.5);
     pop();
   }
 }

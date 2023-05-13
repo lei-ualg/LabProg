@@ -5,8 +5,6 @@ class Bubble {
   boolean falling = false;
   boolean is_next = false;
   
-  int launch_angle = 0;
-  
   PVector pos = new PVector(0, 0);
   PVector velocity= new PVector(0, 0);
 
@@ -18,7 +16,6 @@ class Bubble {
   // Deepclone
   Bubble(Bubble original) {
     this.bubble_color = original.bubble_color;
-    this.launch_angle = original.launch_angle;
     
     this.pos = new PVector(original.pos.x, original.pos.y);
     this.velocity = new PVector(original.velocity.x, original.velocity.y);
@@ -46,7 +43,6 @@ class Bubble {
   }
 
   void fire(int angle) {
-    this.launch_angle = angle;
     this.fired = true;
     float speed = 10;
     velocity = PVector.fromAngle(radians(angle));
@@ -56,7 +52,7 @@ class Bubble {
   void draw() {
     update();
     stroke(0);
-    strokeWeight(1);
+    strokeWeight(2);
     fill(bubble_color);
     if (is_next)
       circle(pos.x-BUBBLE_DIAMETER*2, pos.y+BUBBLE_DIAMETER/2, BUBBLE_DIAMETER);

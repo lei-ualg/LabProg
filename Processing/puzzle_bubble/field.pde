@@ -7,25 +7,21 @@ class Field {
 
   ArrayList<Bubble> fired = new ArrayList<Bubble>();
 
-  ArrayList<PVector> closest_indexes = new ArrayList<PVector>();
-  ArrayList<PVector> closest_cells = new ArrayList<PVector>();
-
   Field() {
   }
 
   void keyPressed() {
-    if (cannon.cooldown%30 == 0 && !cannon.moving && keyCode == ' ') {
-      this.cannon.cooldown++;
+    if (!cannon.cooldown && !cannon.moving && keyCode == ' ') {
+      this.cannon.cooldown = true;
+      this.cannon.timer++;
 
       this.fired.add(new Bubble(loaded));
-      this.closest_cells.add(new PVector(0, 0));
-      this.closest_indexes.add(new PVector(0, 0));
       fired.get(fired.size()-1).fire(int(this.cannon.angle-90));
       loaded = new Bubble(waiting);
       waiting = new Bubble(cannon.pos.x, cannon.pos.y, true);
     }
 
-    if (cannon.cooldown%30 == 0 && (keyCode == LEFT || keyCode == RIGHT))
+    if (!cannon.cooldown && (keyCode == LEFT || keyCode == RIGHT))
       this.cannon.moving = true;
   }
 
@@ -34,43 +30,66 @@ class Field {
       this.cannon.moving = false;
   }
 
-  void closest_cell() {
-    for (int i = 0; i < fired.size(); i++) {
-      float closest_dist = PVector.dist(closest_cells.get(i), fired.get(i).pos);
-      for (int row = 0; row < ceiling.grid.cells.length; row++) {
-        for (int col = 0; col < ceiling.grid.cells[row].length; col++) {
-          if (row%2==1 && col==0) continue;
-          float dist_new = PVector.dist(ceiling.grid.cells[row][col].pos, fired.get(i).pos);
-          if (dist_new < closest_dist) {
-            closest_cells.set(i, ceiling.grid.cells[row][col].pos);
-            closest_indexes.set(i, new PVector(row, col));
-            closest_dist = dist_new;
+  PVector nearest_cell(Bubble bubble, int row, int col) {
+    PVector rowcol = new PVector(0, 0);
+    float nearest = Float.MAX_VALUE;
+    for (int r = row - 1; r <= row + 1; r++) {
+      if (ceiling.grid.cells[max(r-1, 0)] == null) continue;
+      for (int c = col - 1; c <= col + 1; c++) {
+        if (((r == row + 1 || r == row - 1) && c == col + (r%2==0?1:-1)) || (c==col && r==row)) continue;
+        if (r >= 0 && r < 15 && c >= (r % 2 == 0 ? 0 : 1) && c < 10) {
+          float distance = PVector.dist(ceiling.grid.cells[r][c].pos, bubble.pos);
+          if (nearest > distance) {
+            rowcol.set(r, c);
+            nearest = distance;
           }
         }
       }
     }
+    return rowcol;
+  }
+
+  int nearest_cell(Bubble bubble) {
+    int col = 0;
+    float nearest = Float.MAX_VALUE;
+    for (int c = 0; c<ceiling.grid.cells[0].length; c++) {
+      float distance = PVector.dist(bubble.pos, ceiling.grid.cells[0][c].pos);
+      if (nearest > distance) {
+        col= c;
+        nearest = distance;
+      }
+    }
+    return col;
   }
 
   void collision_detector() {
     ArrayList<Bubble> bubbles_collisions = new ArrayList<Bubble>();
     for (int i = 0; i < fired.size(); i++) {
+      int r = 0, c = 0;
       boolean collided = false;
       if (dist(0, fired.get(i).pos.y, 0, ceiling.pos.y) < BUBBLE_DIAMETER/2+WALL*1.5) {
         collided = true;
+        r = 0;
+        c = nearest_cell(fired.get(i));
       } else {
-        for (int row = 0; row < ceiling.grid.cells.length; row++)
+        for (int row = 0; row < ceiling.grid.cells.length; row++) {
+          if (ceiling.grid.cells[row] == null) continue;
           for (int col = 0; col < ceiling.grid.cells[row].length; col++) {
             if (row%2==1 && col==0) continue;
-            else if (ceiling.grid.cells[row][col].bubble != null && PVector.dist(ceiling.grid.cells[row][col].pos, fired.get(i).pos) < BUBBLE_DIAMETER) {
+            else if (ceiling.grid.cells[row][col].bubble != null && PVector.dist(ceiling.grid.cells[row][col].pos, fired.get(i).pos) < BUBBLE_DIAMETER*1) {
               collided = true;
+              PVector pos = nearest_cell(fired.get(i), row, col);
+              r = int(pos.x);
+              c = int(pos.y);
             }
           }
+        }
       }
-      if (collided == true) {
-        if (this.ceiling.grid.cells[int(closest_indexes.get(i).x)][int(closest_indexes.get(i).y)].bubble != null)
+      if (collided) {
+        if (this.ceiling.grid.cells[r][c].bubble != null)
           GAME_OVER = true;
         else {
-          this.ceiling.grid.cells[int(closest_indexes.get(i).x)][int(closest_indexes.get(i).y)].bubble = new Bubble(closest_cells.get(i), fired.get(i));
+          this.ceiling.grid.cells[r][c].bubble = new Bubble(ceiling.grid.cells[r][c].pos, fired.get(i));
           bubbles_collisions.add(fired.get(i));
         }
       }
@@ -80,21 +99,14 @@ class Field {
 
 
   void draw() {
-    closest_cell();
     collision_detector();
 
     cannon.draw();
     loaded.draw();
     waiting.draw();
 
-
     ceiling.draw();
-    for (int i = 0; i < fired.size(); i++) {
-      fired.get(i).draw();
-      push();
-      fill(hue(fired.get(i).bubble_color), saturation(fired.get(i).bubble_color), brightness(fired.get(i).bubble_color), 70);
-      circle(closest_cells.get(i).x, closest_cells.get(i).y, BUBBLE_DIAMETER);
-      pop();
-    }
+    for (Bubble bubble : fired)
+      bubble.draw();
   }
 }
