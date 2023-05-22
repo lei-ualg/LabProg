@@ -1,20 +1,23 @@
 class Ceiling {
-  BubbleGrid grid = new BubbleGrid();
+  PVector pos= new PVector(0, 0);
+  PVector original_pos= new PVector(0, 0);
+  BubbleGrid grid;
   int timer;
   int step=0;
-  PVector pos= new PVector(WALL, BUBBLE_DIAMETER*step);
   float grid_height = 0;
   float step_size = 0;
 
-  Ceiling() {
-    this.grid_height = PVector.dist(grid.cells[0][0].pos,grid.cells[grid.cells.length-1][0].pos) + BUBBLE_DIAMETER/2 + grid.cells[0][0].pos.y;
-    this.step_size = (grid_height-WALL)/15;
+  Ceiling(PVector pos) {
+    this.pos = new PVector(pos.x, pos.y);
+    this.original_pos = new PVector(pos.x, pos.y);
+    this.grid = new BubbleGrid(pos);
+    this.step_size = (grid.cells[1][1].pos.y)-(grid.cells[0][0].pos.y);
+    this.grid_height = step_size*15 + pos.y + (BUBBLE_DIAMETER/2*cos(radians(30)));
   }
 
   void add_step() {
     this.pos.y += step_size;
     this.step++;
-    this.grid.step = step;
 
     if (grid.cells[1] != null) {
       for (int col = 0; col < grid.cells[grid.cells.length-step].length; col++) {
@@ -26,31 +29,44 @@ class Ceiling {
     } else {
       GAME_OVER = true;
     }
+    this.grid.ceiling_down(step_size);
+  }
 
-    for (int row = 0; row < grid.cells.length; row++) {
-      if (grid.cells[row] == null) continue;
-      for (int col = 0; col < grid.cells[row].length; col++) {
-        if (row%2==1 && col==0) continue;
-        this.grid.cells[row][col].pos.y += step_size;
-        if (grid.cells[row][col].bubble != null) this.grid.cells[row][col].bubble.pos.y += step_size;
+  void reset() {
+    this.pos = new PVector(original_pos.x, original_pos.y);
+    this.grid = new BubbleGrid(pos);
+    this.step = 0;
+    this.timer = 0;
+  }
+
+  void victory() {
+    if (grid.cells[0] != null) {
+      for (int col = 0; col < grid.cells[0].length; col++) {
+        if (col==0) continue;
+        else if (grid.cells[0][col].bubble != null)
+          return;
       }
+      GAME_OVER = true;
+      VICTORY = true;
     }
   }
 
   void draw() {
+    victory();
     if ((timer/FRAMERATE) >= 10) {
       this.timer=0;
       this.add_step();
     }
     timer++;
     rectMode(CORNER);
-    fill(color(0, 0, 30));
-    rect(WALL, 0, width-WALL*2, WALL+ (step_size*step));
+    fill(40, 90, 70);
+    rect(pos.x, pos.y, BUBBLE_DIAMETER*10, -(WALL+(step_size*step)));
     fill(color(0, 0, 20));
-    rect(pos.x, pos.y, width-WALL*2, WALL);
+    rect(pos.x, pos.y, BUBBLE_DIAMETER*10, WALL);
     stroke(0);
     strokeWeight(2);
-    line(WALL,grid_height,width-WALL,grid_height);
+    line(pos.x, grid_height, pos.x+BUBBLE_DIAMETER*10, grid_height);
+    // line(10,pos.y+WALL,10,pos.y+WALL+grid_height);
     noStroke();
     grid.draw();
   }

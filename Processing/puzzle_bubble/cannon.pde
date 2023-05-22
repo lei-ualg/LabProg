@@ -52,6 +52,7 @@ class Cannon {
     endShape(CLOSE);
     rect(0, 0, WALL/4, BUBBLE_DIAMETER*2);
     triangle(0, BUBBLE_DIAMETER*-1.4, -BUBBLE_DIAMETER*.15, -BUBBLE_DIAMETER, BUBBLE_DIAMETER*.15, -BUBBLE_DIAMETER);
+    if (AIM) line(0, 0, 0, -height);
     pop();
   }
 }
