@@ -43,7 +43,7 @@ class BubbleGrid {
     for (int row = 0; row < cells.length; row++) {
       if (cells[row] == null) continue;
       for (int col = 0; col < cells[row].length; col++)
-        if (cells[row][col] != null && cells[row][col].bubble != null && !available.contains(cells[row][col].bubble.b_color))
+        if (cells[row][col] != null && cells[row][col].hasBubble() && !available.contains(cells[row][col].bubble.b_color))
           available.add(cells[row][col].bubble.b_color);
     }
     available_colors = available;
@@ -113,7 +113,7 @@ class BubbleGrid {
     if (chain.contains(cell)) return chain;
     chain.add(cell);
     for (BubbleCell nb : neighbors(cell.row, cell.col))
-      if (nb.hasBubble() && nb.bubble.b_color == cell.bubble.b_color)
+      if (nb.hasBubble() && nb.bubble.b_color.equals(cell.bubble.b_color))
         chain = same_color_chain(nb, chain);
     return chain;
   }
@@ -128,16 +128,16 @@ class BubbleGrid {
     return visited;
   }
 
-  void drop_bubbles(BubbleCell cell) {
+  void drop_bubbles() {
     ArrayList<BubbleCell> visited = new ArrayList<BubbleCell>();
     for (int col = 0; col < cells[0].length; col++)
-      if (cells[0][col] != null && cells[0][col].bubble != null)
+      if (cells[0][col] != null && cells[0][col].hasBubble())
         visited = depth_first_search(cells[0][col], visited);
 
     for (int row = 0; row < cells.length; row++) {
       if (cells[row] == null) continue;
       for (int col = 0; col < cells[row].length; col++)
-        if (cells[row][col] != null && cells[row][col].bubble != null && !visited.contains(cells[row][col])) {
+        if (cells[row][col] != null && cells[row][col].hasBubble() && !visited.contains(cells[row][col])) {
           this.falling.add(new Bubble(cells[row][col].bubble));
           cells[row][col].removeBubble();
         }

@@ -22,7 +22,7 @@ class Ceiling {
     if (grid.cells[1] != null) {
       for (int col = 0; col < grid.cells[grid.cells.length-step].length; col++) {
         if (col==0) continue;
-        else if (grid.cells[grid.cells.length-step][col].bubble != null)
+        else if (grid.cells[grid.cells.length-step][col].hasBubble())
           GAME_OVER = true;
       }
       grid.cells[grid.cells.length-step] = null;
@@ -43,7 +43,7 @@ class Ceiling {
     if (grid.cells[0] != null) {
       for (int col = 0; col < grid.cells[0].length; col++) {
         if (col==0) continue;
-        else if (grid.cells[0][col].bubble != null)
+        else if (grid.cells[0][col].hasBubble())
           return;
       }
       GAME_OVER = true;
@@ -66,7 +66,6 @@ class Ceiling {
     stroke(0);
     strokeWeight(2);
     line(pos.x, grid_height, pos.x+BUBBLE_DIAMETER*10, grid_height);
-    // line(10,pos.y+WALL,10,pos.y+WALL+grid_height);
     noStroke();
     grid.draw();
   }

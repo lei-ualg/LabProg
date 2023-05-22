@@ -109,11 +109,10 @@ class Field {
           }
         }
       }
-      if (collided) {
-        if (cell.bubble != null)
+      if (collided && cell != null) {
+        if (cell.hasBubble())
           GAME_OVER = true;
         else {
-
           cell.setBubble(fired.get(i));
           bubbles_collisions.add(fired.get(i));
 
@@ -124,7 +123,7 @@ class Field {
             for (BubbleCell c : chain) {
               c.setPointsDisplay(points);
             }
-            this.ceiling.grid.drop_bubbles(cell);
+            this.ceiling.grid.drop_bubbles();
           }
         }
       }
